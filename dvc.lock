@@ -1,0 +1,60 @@
+schema: '2.0'
+stages:
+  load_data:
+    cmd: python src/load_data.py --config=params.yaml
+    deps:
+    - path: data_given/Tweets.csv
+      md5: c77bef8045f1f0fbf114e43c20cecba6
+      size: 148364703
+    - path: src/get_data.py
+      md5: 37a5d77812c86f697a2ef9ae26bfa3ba
+      size: 686
+    - path: src/load_data.py
+      md5: 6975b03d26f90dc09896ac5da13da8af
+      size: 674
+    outs:
+    - path: data/raw/Tweets.csv
+      md5: 7379b4b8bd72fa8a6e6fdd8086c99609
+      size: 294535607
+  split_data:
+    cmd: python src/split_data.py --config=params.yaml
+    deps:
+    - path: data/raw/Tweets.csv
+      md5: 7379b4b8bd72fa8a6e6fdd8086c99609
+      size: 294535607
+    - path: src/split_data.py
+      md5: e7c962d591ced08adfa96a2029d99c32
+      size: 1103
+    outs:
+    - path: data/processed/test_Tweets.csv
+      md5: 456f079d2805f232c3ac0d03329813d7
+      size: 73676148
+    - path: data/processed/train_Tweets.csv
+      md5: 286717ba058c44037b55b003e4e9c796
+      size: 220909796
+  train_and_evaluate:
+    cmd: python src/train_and_evaluate.py --config=params.yaml
+    deps:
+    - path: data/processed/test_Tweets.csv
+      md5: 456f079d2805f232c3ac0d03329813d7
+      size: 73676148
+    - path: data/processed/train_Tweets.csv
+      md5: 286717ba058c44037b55b003e4e9c796
+      size: 220909796
+    - path: src/train_and_evaluate.py
+      md5: 9fbc161ffded4d896aa1b0536f2f31e5
+      size: 3321
+    params:
+      params.yaml:
+        estimators.RandomForestClassifier.params.class_weight: balanced
+        estimators.RandomForestClassifier.params.n_estimators: 20
+    outs:
+    - path: report/params.json
+      md5: 7261fa22c4bfdfa4595812c45856ab5d
+      size: 61
+    - path: report/scores.json
+      md5: f9b2e0b5d75c37d49edd75519f8525eb
+      size: 464
+    - path: saved_models/model.joblib
+      md5: 9f65a4c05a29a888f37ff205a58447a4
+      size: 5775629
