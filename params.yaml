@@ -1,0 +1,28 @@
+base:
+  project: Tweets-project
+  random_state: 42
+  target_col: airline_sentiment
+
+data_source:
+  s3_source: data_given/Tweets.csv
+
+load_data:
+  raw_dataset_csv: data/raw/Tweets.csv
+
+split_data:
+  train_path: data/processed/train_Tweets.csv
+  test_path: data/processed/test_Tweets.csv
+  test_size: 0.25
+
+estimators:
+  RandomForestClassifier:
+    params:
+      n_estimators: 20
+      class_weight: balanced
+model_dir: saved_models
+
+reports:
+  params: report/params.json
+  scores: report/scores.json
+
+webapp_model_dir: prediction_service/model/model.joblib

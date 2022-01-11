@@ -1,0 +1,35 @@
+stages:
+  load_data:
+    cmd: python src/load_data.py --config=params.yaml
+    deps:
+    - src/get_data.py
+    - src/load_data.py
+    - data_given/Tweets.csv
+    outs:
+    - data/raw/Tweets.csv
+
+  split_data:
+    cmd: python src/split_data.py --config=params.yaml
+    deps:
+    - src/split_data.py
+    - data/raw/Tweets.csv
+    outs:
+    - data/processed/train_Tweets.csv
+    - data/processed/test_Tweets.csv
+
+  train_and_evaluate:
+    cmd: python src/train_and_evaluate.py --config=params.yaml
+    deps:
+    - data/processed/train_Tweets.csv
+    - data/processed/test_Tweets.csv 
+    - src/train_and_evaluate.py
+    params:
+    - estimators.RandomForestClassifier.params.n_estimators
+    - estimators.RandomForestClassifier.params.class_weight
+    metrics:
+    - report/scores.json:
+        cache: false
+    - report/params.json:
+        cache: false
+    outs:
+    - saved_models/model.joblib
