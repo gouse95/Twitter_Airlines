@@ -1,0 +1,4 @@
+{
+    "n_estimators": 20,
+    "class_weight": "balanced"
+}
